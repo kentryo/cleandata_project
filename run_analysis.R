@@ -39,3 +39,6 @@ names(Feature) <- FeatureName$V2
 Data_merged <- cbind(Subject, Activity, Feature)
 
 #Extract the mean and standard deviation files
+mean_and_std_names <- FeatureName$V2[grep("-(mean|std)\\(\\)", FeatureName$V2)]
+mean_and_std_names <- c("Subject", "Activity", as.character(mean_and_std_names))
+Data_subset <- Data_merged[, mean_and_std_names]
