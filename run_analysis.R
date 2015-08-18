@@ -2,6 +2,8 @@
 # clear workspace
 rm(list = ls())
 #load necessary R packages
+if(!plyr %in% installed.packages()){install.packages("plyr")}
+library(plyr)
 
 #Download the data file and save them in get and clean data folder
 if(!file.exists("./cleandata_project")){dir.creat("./cleandata_project")}
@@ -42,3 +44,18 @@ Data_merged <- cbind(Subject, Activity, Feature)
 mean_and_std_names <- FeatureName$V2[grep("-(mean|std)\\(\\)", FeatureName$V2)]
 mean_and_std_names <- c("Subject", "Activity", as.character(mean_and_std_names))
 Data_subset <- Data_merged[, mean_and_std_names]
+
+#Change Activity values to descriptive names
+Data_subset[, 2] <- ActivityLabel[Data_subset[, 2], 2]
+
+#Change labels to proper descriptive names
+names(Data_subset) <- gsub("^t", "Time", names(Data_subset))
+names(Data_subset) <- gsub("^f", "Frequency", names(Data_subset))
+names(Data_subset) <- gsub("Acc", "Accelerometer", names(Data_subset))
+names(Data_subset) <- gsub("Gyro", "Gyroscope", names(Data_subset))
+names(Data_subset) <- gsub("Mag", "Magnitude", names(Data_subset))
+
+#Creat a second tidy data set
+Data <- aggregate(. ~Subject + Activity, Data_subset, mean)
+Data <- Data[order(Data$Subject,Data$Activity), ]
+write.table(Data, file = "tidydata.txt",row.name=FALSE)
