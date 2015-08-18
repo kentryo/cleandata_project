@@ -23,4 +23,4 @@ FeatureTest <- read.table(file.path(data_path, "test", "X_test.txt"))
 FeatureTrain <- read.table(file.path(data_path, "train", "X_train.txt"))
 #Read Name and level files
 FeatureName <- read.table(file.path(data_path, "features.txt"))
-ActivityLabel <- read.table(file.path(data_path, "activity_lables.txt"))
+ActivityLabel <- read.table(file.path(data_path, "activity_labels.txt"))
