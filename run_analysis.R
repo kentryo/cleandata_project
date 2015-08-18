@@ -24,3 +24,18 @@ FeatureTrain <- read.table(file.path(data_path, "train", "X_train.txt"))
 #Read Name and level files
 FeatureName <- read.table(file.path(data_path, "features.txt"))
 ActivityLabel <- read.table(file.path(data_path, "activity_labels.txt"))
+
+#Merge the training and test files
+Activity <- rbind(ActivityTest, ActivityTrain)
+Subject <- rbind(SubjectTest,SubjectTrain)
+Feature <- rbind(FeatureTest, FeatureTrain)
+
+#Change names of data column names
+names(Activity) <- c("Activity")
+names(Subject) <- c("Subject")
+names(Feature) <- FeatureName$V2
+
+#Merge data together
+Data_merged <- cbind(Subject, Activity, Feature)
+
+#Extract the mean and standard deviation files
