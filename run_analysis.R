@@ -58,4 +58,5 @@ names(Data_subset) <- gsub("Mag", "Magnitude", names(Data_subset))
 #Creat a second tidy data set
 Data <- aggregate(. ~Subject + Activity, Data_subset, mean)
 Data <- Data[order(Data$Subject,Data$Activity), ]
-write.table(Data, file = "tidydata.txt",row.name=FALSE)
+write.table(Data, file = "./cleandata_project/tidydata.txt",row.name=FALSE)
+
