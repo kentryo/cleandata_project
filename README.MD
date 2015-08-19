@@ -1,9 +1,7 @@
----
-title: "Getting and cleaning data course project"
-author: "Kentryo"
-date: "August 19, 2015"
-output: html_document
----
+#Getting and cleaning data course project
+**Kentryo**
+
+**August 19, 2015**
 
 This is the README markdown for the getting and cleaning data course project.
 
