@@ -74,6 +74,70 @@ img {
 <h2>2.Data</h2>
 <p>Raw data used in this project were as followed: - features.txt - activity_labels.txt - subject_train.txt - x_train.txt - y_train.txt - subject_test.txt - x_test.txt - y_test.txt</p>
 </div>
+<div id="variale-description" class="section level2">
+<h2>3.Variale description</h2>
+<div id="data-identifier" class="section level3">
+<h3>3.1 Data Identifier</h3>
+<ul>
+<li>Subject</li>
+<li>Activity</li>
+</ul>
+<p>Subject record the target while Activity record the target activity status, including 6 levels regarding to 6 values. ### 3.2 Activity levels The activity levels are as followed: - WALKING (1) - WALKING_UPSTAIRS (2) - WALKING_DOWNSTAIRS (3) - SITTING (4) - STANDING (5) - LAYING (6)</p>
+</div>
+<div id="measured-variables" class="section level3">
+<h3>3.3 Measured Variables</h3>
+<p>The following variales were used in this project, specific explanation could be found in the previous description link or in the data file. - tBodyAccMeanX - tBodyAccMeanY - tBodyAccMeanZ - tBodyAccStdX - tBodyAccStdY - tBodyAccStdZ - tGravityAccMeanX - tGravityAccMeanY - tGravityAccMeanZ - tGravityAccStdX - tGravityAccStdY - tGravityAccStdZ - tBodyAccJerkMeanX - tBodyAccJerkMeanY - tBodyAccJerkMeanZ - tBodyAccJerkStdX - tBodyAccJerkStdY - tBodyAccJerkStdZ - tBodyGyroMeanX - tBodyGyroMeanY - tBodyGyroMeanZ - tBodyGyroStdX - tBodyGyroStdY - tBodyGyroStdZ - tBodyGyroJerkMeanX - tBodyGyroJerkMeanY - tBodyGyroJerkMeanZ - tBodyGyroJerkStdX - tBodyGyroJerkStdY - tBodyGyroJerkStdZ - tBodyAccMagMean - tBodyAccMagStd - tGravityAccMagMean - tGravityAccMagStd - tBodyAccJerkMagMean - tBodyAccJerkMagStd - tBodyGyroMagMean - tBodyGyroMagStd - tBodyGyroJerkMagMean - tBodyGyroJerkMagStd - fBodyAccMeanX - fBodyAccMeanY - fBodyAccMeanZ - fBodyAccStdX - fBodyAccStdY - fBodyAccStdZ - fBodyAccMeanFreqX - fBodyAccMeanFreqY - fBodyAccMeanFreqZ - fBodyAccJerkMeanX - fBodyAccJerkMeanY - fBodyAccJerkMeanZ - fBodyAccJerkStdX - fBodyAccJerkStdY - fBodyAccJerkStdZ - fBodyAccJerkMeanFreqX - fBodyAccJerkMeanFreqY - fBodyAccJerkMeanFreqZ - fBodyGyroMeanX - fBodyGyroMeanY - fBodyGyroMeanZ - fBodyGyroStdX - fBodyGyroStdY - fBodyGyroStdZ - fBodyGyroMeanFreqX - fBodyGyroMeanFreqY - fBodyGyroMeanFreqZ - fBodyAccMagMean - fBodyAccMagStd - fBodyAccMagMeanFreq - fBodyBodyAccJerkMagMean - fBodyBodyAccJerkMagStd - fBodyBodyAccJerkMagMeanFreq - fBodyBodyGyroMagMean - fBodyBodyGyroMagStd - fBodyBodyGyroMagMeanFreq - fBodyBodyGyroJerkMagMean - fBodyBodyGyroJerkMagStd - fBodyBodyGyroJerkMagMeanFreq</p>
+</div>
+</div>
+<div id="script-explanation" class="section level2">
+<h2>4. Script explanation</h2>
+<p>This project contains one script called <code>run_analysis.R</code>. This script will do the following:</p>
+<ol style="list-style-type: decimal">
+<li><p>Clear the R workspace and install necessary package <code>plyr</code>.</p>
+<pre class="{r}"><code>rm(list = ls())
+if(!plyr %in% installed.packages()){install.packages(&quot;plyr&quot;)}
+library(plyr)</code></pre></li>
+<li><p>Download the data file and save them in getandcleandata folder and unzip the file.</p>
+<pre class="{r}"><code>if(!file.exists(&quot;./cleandata_project&quot;)){dir.creat(&quot;./cleandata_project&quot;)}
+fileurl &lt;- &quot;https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip&quot;
+download.file(fileurl, destfile = &quot;./cleandata_project/rawdata.zip&quot;)
+unzip(zipfile = &quot;./cleandata_project/rawdata.zip&quot;, exdir = &quot;./cleandata_project&quot;)</code></pre></li>
+<li><p>Read target raw data files.</p>
+<pre class="{r}"><code>data_path &lt;- &quot;./cleandata_project/UCI HAR Dataset&quot;
+ActivityTest &lt;- read.table(file.path(data_path, &quot;test&quot;, &quot;Y_test.txt&quot;))
+ActivityTrain &lt;- read.table(file.path(data_path, &quot;train&quot;, &quot;Y_train.txt&quot;))
+SubjectTest &lt;- read.table(file.path(data_path, &quot;test&quot;, &quot;subject_test.txt&quot;))
+SubjectTrain &lt;- read.table(file.path(data_path, &quot;train&quot;, &quot;subject_train.txt&quot;))
+FeatureTest &lt;- read.table(file.path(data_path, &quot;test&quot;, &quot;X_test.txt&quot;))
+FeatureTrain &lt;- read.table(file.path(data_path, &quot;train&quot;, &quot;X_train.txt&quot;))
+FeatureName &lt;- read.table(file.path(data_path, &quot;features.txt&quot;))
+ActivityLabel &lt;- read.table(file.path(data_path, &quot;activity_labels.txt&quot;))</code></pre></li>
+<li><p>Merge and Change label names</p>
+<pre class="{r}"><code>Activity &lt;- rbind(ActivityTest, ActivityTrain)
+Subject &lt;- rbind(SubjectTest,SubjectTrain)
+Feature &lt;- rbind(FeatureTest, FeatureTrain)
+names(Activity) &lt;- c(&quot;Activity&quot;)
+names(Subject) &lt;- c(&quot;Subject&quot;)
+names(Feature) &lt;- FeatureName$V2
+Data_merged &lt;- cbind(Subject, Activity, Feature)</code></pre></li>
+<li><p>Extract the mean and standard deviation files</p>
+<pre class="{r}"><code>mean_and_std_names &lt;- FeatureName$V2[grep(&quot;-(mean|std)\\(\\)&quot;, FeatureName$V2)]
+mean_and_std_names &lt;- c(&quot;Subject&quot;, &quot;Activity&quot;, as.character(mean_and_std_names))
+Data_subset &lt;- Data_merged[, mean_and_std_names]</code></pre></li>
+<li><p>Change the Activity label and column labels to proper descriptive names</p>
+<pre class="{r}"><code>Data_subset[, 2] &lt;- ActivityLabel[Data_subset[, 2], 2]
+names(Data_subset) &lt;- gsub(&quot;^t&quot;, &quot;Time&quot;, names(Data_subset))
+names(Data_subset) &lt;- gsub(&quot;^f&quot;, &quot;Frequency&quot;, names(Data_subset))
+names(Data_subset) &lt;- gsub(&quot;Acc&quot;, &quot;Accelerometer&quot;, names(Data_subset))
+names(Data_subset) &lt;- gsub(&quot;Gyro&quot;, &quot;Gyroscope&quot;, names(Data_subset))
+names(Data_subset) &lt;- gsub(&quot;Mag&quot;, &quot;Magnitude&quot;, names(Data_subset))</code></pre></li>
+<li><p>Create a second tidy data set with means of data for each subject and each activity</p>
+<pre class="{r}"><code>Data &lt;- aggregate(. ~Subject + Activity, Data_subset, mean)
+Data &lt;- Data[order(Data$Subject,Data$Activity), ]
+write.table(Data, file = &quot;./cleandata_project/tidydata.txt&quot;,row.name=FALSE)</code></pre></li>
+</ol>
+<p>The script will create a final tidy data set call <code>tidydata.txt</code></p>
+</div>
 </div>
 
 
