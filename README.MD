@@ -1,7 +1,9 @@
 #Getting and cleaning data course project
 **Kentryo**
 
-**August 19, 2015**
+**12/12/2016**
+
+Reviewed for new submission for the certification of the getting and cleaning data course.
 
 This is the README markdown for the getting and cleaning data course project.
 
